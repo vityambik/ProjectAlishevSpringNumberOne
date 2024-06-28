@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>person</title>
+</head>
+<body>
+<p th:text="${person.getFull_name() + ', ' + person.getYear_of_birth()}">VALUE</p>
+
+<form th:method="GET" th:action="@{/people/{id}/edit (id=${person.getPerson_id()})}">
+    <input type="submit" value="Редактировать!"/>
+</form>
+
+<form th:method="DELETE" th:action="@{/people/{id} (id=${person.getPerson_id()})}">
+    <input type="submit" value="Удалить!"/>
+</form>
+</body>
+</html>
