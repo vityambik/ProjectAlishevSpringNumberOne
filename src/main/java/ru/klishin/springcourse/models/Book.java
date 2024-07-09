@@ -17,7 +17,7 @@ import javax.validation.constraints.Size;
 public class Book {
 
     private int book_id;
-    private int person_id;
+    private Integer person_id;
 
     @NotEmpty(message = "Title should not be empty")
     @Size(min = 1, max = 100, message = "Title should be between 1 and 100 characters")

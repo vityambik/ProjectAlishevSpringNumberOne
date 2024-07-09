@@ -6,7 +6,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.klishin.springcourse.dao.BookDAO;
+import ru.klishin.springcourse.dao.PersonDAO;
 import ru.klishin.springcourse.models.Book;
+import ru.klishin.springcourse.models.Person;
 import ru.klishin.springcourse.util.BookValidator;
 
 import javax.validation.Valid;
@@ -17,13 +19,14 @@ public class LibraryController {
 
     private final BookDAO bookDAO;
     private final BookValidator bookValidator;
+    private final PersonDAO personDAO;
 
     @Autowired
-    public LibraryController(BookDAO bookDAO, BookValidator bookValidator) {
+    public LibraryController(BookDAO bookDAO, BookValidator bookValidator, PersonDAO personDAO) {
         this.bookDAO = bookDAO;
         this.bookValidator = bookValidator;
+        this.personDAO = personDAO;
     }
-
 
     @GetMapping()
     public String index(Model model) {
@@ -32,8 +35,13 @@ public class LibraryController {
     }
 
     @GetMapping("/{id}")
-    public String show(@PathVariable("id") int id, Model model) {
+    public String show(@PathVariable("id") int id, Model model, @ModelAttribute("person") Person person) {
+
+        if(bookDAO.show(id).getPerson_id() != null)
+            model.addAttribute("reader", personDAO.show(bookDAO.show(id).getPerson_id()));
+
         model.addAttribute("book", bookDAO.show(id));
+        model.addAttribute("people", personDAO.index());
         return "books/show";
     }
 
@@ -67,6 +75,18 @@ public class LibraryController {
             return "books/edit";
 
         bookDAO.update(id, book);
+        return "redirect:/books";
+    }
+
+    @PatchMapping("/{id}/appoint")
+    public String appoint(@ModelAttribute("person") Person person, @PathVariable("id") int book_id) {
+        bookDAO.appoint(person.getPerson_id(), book_id);
+        return "redirect:/books";
+    }
+
+    @PatchMapping("/{id}/freeing")
+    public String freeingBook(@PathVariable("id") int book_id) {
+        bookDAO.freeingBook(book_id);
         return "redirect:/books";
     }
 
