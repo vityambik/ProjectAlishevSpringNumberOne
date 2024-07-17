@@ -21,7 +21,7 @@
     </select>
     <input type="submit" value="Назначить книгу" />
 </form>
-<hr>
+<hr/>
 <form th:method="GET" th:action="@{/books/{id}/edit (id=${book.getBook_id()})}">
     <input type="submit" value="Редактировать!"/>
 </form>
